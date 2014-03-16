@@ -1,15 +1,13 @@
 # MATLAB Spring 2014 – Research Plan (Template)
 (text between brackets to be removed)
 
-> * Group Name: (be creative!)
-> * Group participants names: Dörrie, Jan Wilken
-> * Project Title: (can be changed)
+> * Group Name: Zurich Traffic Group
+> * Group participants names: Jan Dörrie, Simone Forte, Charalampos Gkonos, Athina Korfiati  
+> * Project Title: Traffic simulation in the city of Zurich
 
 ## General Introduction
 
-(States your motivation clearly: why is it important / interesting to solve this problem?)
-(Add real-world examples, if any)
-(Put the problem into a historical context, from what does it originate? Are there already some proposed solutions?)
+Traffic is a serious problem with which every city has to deal. In the city of Zurich, traffic is also a problem and the adopted actions aim at a better organisation, which can lead to a better combination of travel safety and efficiency.
 
 ## The Model
 
@@ -18,14 +16,11 @@
 
 ## Fundamental Questions
 
-(At the end of the project you want to find the answer to these questions)
-(Formulate a few, clear questions. Articulate them in sub-questions, from the more general to the more specific. )
-
+The goal is to develop an efficient traffic model based on our data. To implement the model in order to visualise the existing traffic situation in the city of Zurich. Then, we want to analyse the impact that a highway tunnel connecting the two sides of the lake would have in the whole area.
 
 ## Expected Results
 
-(What are the answers to the above questions that you expect to find before starting your research?)
-
+The expected result would be an amelioration of the traffic situation in the city by declining the traffic jams in the main roads. 
 
 ## References 
 
@@ -33,6 +28,8 @@
 (Explain possible extension to the above models)
 (Code / Projects Reports of the previous year)
 
+- OpenStreetMap
+- http://www.ggau.net/html/GG03.html
 
 ## Research Methods
 
