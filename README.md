@@ -26,7 +26,7 @@ The goal is to develop an efficient traffic model based on our data. To implemen
 
 ## Expected Results
 
-The expected result would be an amelioration of the traffic situation in the city by declining the traffic jams in the main roads. 
+The expected result would be an amelioration of the traffic situation in the city. More specifically it is expected that the travel time for a driver to move from one place to another will be reduced, while at the same time the amount of traffic jam in the roads will be declined.
 
 ## References 
 
