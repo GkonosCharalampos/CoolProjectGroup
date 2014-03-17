@@ -11,8 +11,6 @@ Traffic is a serious problem with which every city has to deal. In the city of Z
 
 ## The Model
 
-(Define dependent and independent variables you want to study. Say how you want to measure them.) (Why is your model a good abtraction of the problem you want to study?) (Are you capturing all the relevant aspects of the problem?)
-
 The progect will be based in general terms on the "Four step model".
 
 The four steps of the classical urban transportation planning system model are:
