@@ -1,0 +1,41 @@
+Possible keys and values for Highway tag:
+
+highway=motorway fast, restricted access road
+highway=trunk most important in standard road network
+highway=primary ...down to...
+highway=secondary ...
+highway=tertiary ...
+highway=unclassified least important in standard road network
+highway=residential smaller road for access mostly to residential properties
+highway=service smaller road for access, often but not exclusively to non-residential properties
+
+
+Osmosis usage examples to create various extracts of roads:
+
+osmosis \
+  --read-xml Zurich.osm \
+  --tf accept-ways highway=motorway,motorway_link,trunk,trunk_link,primary,primary_link,secondary,secondary_link,tertiary,tertiary_link \
+  --tf reject-relations \
+  --used-node \
+  --write-xml Zurich_Tertiary_Roads+.osm
+
+osmosis \
+  --read-xml Zurich.osm \
+  --tf accept-ways highway=motorway,motorway_link,trunk,trunk_link,primary,primary_link,secondary,secondary_link,tertiary,tertiary_link,unclassified,unclassified_link \
+  --tf reject-relations \
+  --used-node \
+  --write-xml Zurich_Unclassified_Roads+.osm
+
+osmosis \
+  --read-xml Zurich.osm \
+  --tf accept-ways highway=motorway,motorway_link,trunk,trunk_link,primary,primary_link,secondary,secondary_link,tertiary,tertiary_link,unclassified,unclassified_link,residential,residential_link \
+  --tf reject-relations \
+  --used-node \
+  --write-xml Zurich_Residential_Roads+.osm
+
+osmosis \
+  --read-xml Zurich.osm \
+  --tf accept-ways highway=* \
+  --tf reject-relations \
+  --used-node \
+  --write-xml Zurich_All_Roads.osm
