@@ -38,4 +38,6 @@ The expected result would be an amelioration of the traffic situation in the cit
 
 ## Other
 
-(mention datasets you are going to use)
+We will make use of OpenStreetMap which provides us with the complete road network of Zurich.
+It includes the type of the road (motorway, trunk, primary, etc.) and coordinates of points a long the streets.
+This enables us to realistically model traffic including direction and speed of every car.
