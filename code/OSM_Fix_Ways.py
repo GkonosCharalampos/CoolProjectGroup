@@ -1,4 +1,6 @@
-import re,sys # needed for re.split() and sys.argv()
+#!/usr/bin/python
+
+import re, sys # needed for re.split() and sys.argv()
 
 """
 This script expects an OpenStreetMap.
