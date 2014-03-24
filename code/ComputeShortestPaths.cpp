@@ -10,7 +10,7 @@
 #include <cstring>
 
 /******************************************************************************
-* Using directives                                                                    *
+* Using directives                                                            *
 ******************************************************************************/
 using std::map;      using std::vector; using std::pair; using std::priority_queue;
 using std::ios_base; using std::cin;    using std::cout; using std::endl;
