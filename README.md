@@ -38,6 +38,8 @@ More specifically it is expected that the travel time for a driver to move from 
 - OpenStreetMap: http://www.openstreetmap.org/
 - http://www.ggau.net/html/GG03.html
 - http://www.its.uci.edu/its/publications/papers/CASA/UCI-ITS-AS-WP-07-2.pdf
+- http://en.wikipedia.org/wiki/Subdivisions_of_Zürich
+- http://www.moneyhouse.ch/en
 
 
 ## Research Methods
