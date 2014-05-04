@@ -10,6 +10,15 @@ def print_help():
     print 'Usage: {} File.osm [Graph.txt]'.format(sys.argv[0])
 
 
+def rem_ext(filename):
+    """
+    Takes a filename as arugment and returns it with the file extension removed.
+    Returns the original string if no extension could be found.
+    """
+    last_dot_idx = filename.rfind('.')
+    return filename[:last_dot_idx] if last_dot_idx != -1 else filename
+
+
 def main():
     """
     Check if enough arguments were provided.
@@ -19,12 +28,14 @@ def main():
         print_help()
         return
 
+    in_file = sys.argv[1]
+    out_file = sys.argv[2] if len(sys.argv) > 2 else '{}_Graph.txt'.format(rem_ext(in_file))
+
     # Parse the input file.
-    tree = ETree.parse(sys.argv[1])
+    tree = ETree.parse(in_file)
     root = tree.getroot()
 
     # Open the output_file for writing.
-    out_file = sys.argv[2] if len(sys.argv) > 2 else '{}_Graph.txt'.format(sys.argv[1][:-4])
     f = open(out_file, 'w')
 
     # Count number of nodes and write it to the file.

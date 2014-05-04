@@ -26,3 +26,4 @@ function [nodes, edges, node_id_to_idx, idx_to_node_id] = read_graph(filename)
 		edges(2, i) = node_id_to_idx(edges(2, i));
 	end
 end
+

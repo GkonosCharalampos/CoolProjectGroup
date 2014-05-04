@@ -37,6 +37,10 @@ struct Node
         id(_id), lat(_lat), lon(_lon) { }
 };
 
+
+const double radius = 6371.0; // Radius of the earth in km
+
+
 /**
  * Method to convert degrees to radians
  * @param  deg degrees
@@ -46,6 +50,7 @@ double deg2rad(double deg) {
     return deg * (M_PI / 180.0);
 }
 
+
 /**
  * Computes the haversine distance between two points with given lat and lon.
  * @param  u First Node
@@ -54,8 +59,6 @@ double deg2rad(double deg) {
  */
 double hav_dist(const Node& u, const Node& v)
 {
-    double radius = 6371.0; // Radius of the earth in km
-
     double dLat = deg2rad(v.lat - u.lat);
     double dLon = deg2rad(v.lon - u.lon);
 
@@ -66,6 +69,24 @@ double hav_dist(const Node& u, const Node& v)
     double angle = 2 * atan2(sqrt(a), sqrt(1.0 - a));
     return angle * radius;
 }
+
+
+/**
+ * Computes the distance between two points with given lat and lon using the law of cosines.
+ * @param  u First Node
+ * @param  v Second Node
+ * @return   Distance
+ */
+double cos_dist(const Node& u, const Node& v)
+{
+    double lat1 = deg2rad(u.lat);
+    double lat2 = deg2rad(v.lat);
+
+    double dLon = deg2rad(v.lon - u.lon);
+
+    return acos(sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(dLon)) * radius;
+}
+
 
 int main(int argc, char const *argv[])
 {
@@ -154,7 +175,7 @@ int main(int argc, char const *argv[])
                 const Node& node2 = nodes[adj];
 
                 // compute their distance and the total distance
-                double dist = hav_dist(node1, node2);
+                double dist = cos_dist(node1, node2);
                 double new_dist = dist + u.first;
 
                 // if the new distance is better than the one stored update it
