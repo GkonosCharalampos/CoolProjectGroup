@@ -115,7 +115,7 @@
             maxZoom: 18,
             attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
                 '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-                'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+                'Imagery ?? <a href="http://mapbox.com">Mapbox</a>',
             id: 'examples.map-9ijuk24y'
         }).addTo(map);
 
@@ -134,8 +134,8 @@
     var coords = init_cars();
     add_circles(coords);
 
-    for (var i = 0; i < 100; i++) {
-        sleep(1000 * i, update_circles);
+    for (var i = 0; i < 1000; i++) {
+        sleep(300 * i, update_circles);
     };
         // L.polygon([
         //     [51.509, -0.08],
