@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaflet Quick Start Guide Example</title>
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="../dist/leaflet.css" />
+    <link rel="stylesheet" href="HelloWorld.css" />
+</head>
+<body>
+    <script src="../dist/leaflet.js"></script>
+    <script src="../jQuery/jquery-1.11.1.js"></script>
+
+    <div id="map"></div>
+
+    <script>
+        function httpGet(theUrl)
+        {
+            var xmlHttp = null;
+
+            xmlHttp = new XMLHttpRequest();
+            xmlHttp.open( "GET", theUrl, false );
+            xmlHttp.send( null );
+            return xmlHttp.responseText;
+        };
+
+
+        function request_positions()
+        {
+            var request = httpGet("http://localhost:8282/2");
+            var obj = $.parseJSON(request);
+            console.log(obj);
+            return obj;
+        };
+
+
+        /**
+         * Sleep function.  Pauses execution of the callback function for millis ms.
+         * @param  {int}   millis   Number of milliseconds
+         * @param  {Function} callback Function which execution is paused.
+         * @return {void}
+         */
+        function sleep(millis, callback) {
+            setTimeout(function() {
+                callback();
+            }, millis);
+        };
+
+        function add_circles(coords) {
+            for (var i = 0; i < coords.length; i++)
+            {
+                var rnd_x = coords[i][0];
+                var rnd_y = coords[i][1];
+
+                var curr_x = rnd_x * NE[0] + (1 - rnd_x) * SW[0];
+                var curr_y = rnd_y * NE[1] + (1 - rnd_y) * SW[1];
+
+                L.circle([curr_x, curr_y], 30, {
+                      stroke: false,
+                    // color: 'red',
+                    fillColor: 'red',
+                    fillOpacity: 0.5
+                }).addTo(markers);
+            };
+        };
+
+        function redraw_circles(coords) {
+            var circles = markers.getLayers();
+            // markers.clearLayers();
+            // // alert();
+
+            console.log('redrawn');
+
+            for (var i = 0; i < Math.min(circles.length, coords.length); i++)
+            {
+                var rnd_x = coords[i][0];
+                var rnd_y = coords[i][1];
+
+                var curr_x = rnd_x * NE[0] + (1 - rnd_x) * SW[0];
+                var curr_y = rnd_y * NE[1] + (1 - rnd_y) * SW[1];
+
+                circles[i].setLatLng([curr_x, curr_y]);
+                circles[i].redraw();
+            };
+        };
+
+
+        function update_circles()
+        {
+            var coords = request_positions();
+            redraw_circles(coords);
+        };
+
+        var zurich_lat_lon = [47.3685586, 8.5404434];
+
+        var map = L.map('map').setView(zurich_lat_lon, 13);
+
+
+        L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+                '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+                'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+            id: 'examples.map-9ijuk24y'
+        }).addTo(map);
+
+        var markers = new L.LayerGroup().addTo(map);
+        // var circles = new Array();
+
+        // L.marker(zurich_lat_lon).addTo(map)
+        //     .bindPopup("<b>Hello world!</b><br />I am a popup.").openPopup();
+
+
+
+
+    var NE = [47.431870, 8.605620];
+    var SW = [47.322731, 8.465100];
+
+    var coords = request_positions();
+    add_circles(coords);
+
+    for (var i = 0; i < 100; i++) {
+        sleep(1000 * i, update_circles);
+    };
+        // L.polygon([
+        //     [51.509, -0.08],
+        //     [51.503, -0.06],
+        //     [51.51, -0.047]
+        // ]).addTo(map).bindPopup("I am a polygon.");
+
+
+        // var popup = L.popup();
+
+        // function onMapClick(e) {
+        //     popup
+        //         .setLatLng(e.latlng)
+        //         .setContent("You clicked the map at " + e.latlng.toString())
+        //         .openOn(map);
+        // }
+
+        // map.on('click', onMapClick);
+
+    </script>
+</body>
+</html>
