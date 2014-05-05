@@ -7,8 +7,8 @@ function [nodes,sources,sinks,paths,delay] = initialize_simulation()
     
     numnodes = size(nodes,2);
     
-    sources = rand(numcars,1)*numnodes + 1;
-    sinks = rand(numcars,1)*numnodes + 1;
+    sources = floor(rand(numcars,1)*numnodes + 1);
+    sinks = floor(rand(numcars,1)*numnodes + 1);
     
     paths = dijkstra_mx(nodes,edges,sources',sinks');
 end

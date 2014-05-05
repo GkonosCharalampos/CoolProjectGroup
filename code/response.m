@@ -1,6 +1,7 @@
-function response(out) 
+function response(out,data) 
     import com.google.gson.*;
-    data = rand(10000,2);
+    
+%    data = rand(10000,2);
     gson = Gson;
     message = gson.toJson(data);
 
