@@ -16,6 +16,8 @@
     <div id="map"></div>
 
     <script>
+        var host = "http://localhost:8787/";
+
         function httpGet(theUrl)
         {
             var xmlHttp = null;
@@ -27,9 +29,18 @@
         };
 
 
-        function request_positions()
+        function init_cars()
         {
-            var request = httpGet("http://localhost:8282/2");
+            var request = httpGet(host + "1");
+            var obj = $.parseJSON(request);
+            console.log(obj);
+            return obj;
+        };
+
+
+        function update_cars()
+        {
+            var request = httpGet(host + "2");
             var obj = $.parseJSON(request);
             console.log(obj);
             return obj;
@@ -51,13 +62,14 @@
         function add_circles(coords) {
             for (var i = 0; i < coords.length; i++)
             {
-                var rnd_x = coords[i][0];
-                var rnd_y = coords[i][1];
+                // var rnd_x = coords[i][0];
+                // var rnd_y = coords[i][1];
 
-                var curr_x = rnd_x * NE[0] + (1 - rnd_x) * SW[0];
-                var curr_y = rnd_y * NE[1] + (1 - rnd_y) * SW[1];
+                // var curr_x = rnd_x * NE[0] + (1 - rnd_x) * SW[0];
+                // var curr_y = rnd_y * NE[1] + (1 - rnd_y) * SW[1];
 
-                L.circle([curr_x, curr_y], 30, {
+                // L.circle([curr_x, curr_y], 30, {
+                L.circle(coords[i], 30, {
                       stroke: false,
                     // color: 'red',
                     fillColor: 'red',
@@ -75,13 +87,14 @@
 
             for (var i = 0; i < Math.min(circles.length, coords.length); i++)
             {
-                var rnd_x = coords[i][0];
-                var rnd_y = coords[i][1];
+                // var rnd_x = coords[i][0];
+                // var rnd_y = coords[i][1];
 
-                var curr_x = rnd_x * NE[0] + (1 - rnd_x) * SW[0];
-                var curr_y = rnd_y * NE[1] + (1 - rnd_y) * SW[1];
+                // var curr_x = rnd_x * NE[0] + (1 - rnd_x) * SW[0];
+                // var curr_y = rnd_y * NE[1] + (1 - rnd_y) * SW[1];
 
-                circles[i].setLatLng([curr_x, curr_y]);
+                // circles[i].setLatLng([curr_x, curr_y]);
+                circles[i].setLatLng(coords[i]);
                 circles[i].redraw();
             };
         };
@@ -89,7 +102,7 @@
 
         function update_circles()
         {
-            var coords = request_positions();
+            var coords = update_cars();
             redraw_circles(coords);
         };
 
@@ -118,7 +131,7 @@
     var NE = [47.431870, 8.605620];
     var SW = [47.322731, 8.465100];
 
-    var coords = request_positions();
+    var coords = init_cars();
     add_circles(coords);
 
     for (var i = 0; i < 100; i++) {
