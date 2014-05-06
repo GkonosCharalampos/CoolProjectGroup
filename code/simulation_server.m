@@ -43,17 +43,23 @@ while not(stop)
     elseif (message == '0')       
         'stop simulation'
         stop = 1;
+        continue
     else
-        'skip'        
+        'skip'
+        continue
     end
    
     numcars = size(sources,1);
     data = zeros(numcars,2);
     
     for i = 1:numcars
-        sources(i)
-        nodes(2:3,int32(sources(i)))
-        data(i,:) = nodes(2:3,int32(sources(i)));
+%       sources(i);
+%       nodes(2:3,int32(sources(i)));
+        if(int32(sources(i)) ~= 0)
+            data(i,:) = nodes(2:3,int32(sources(i,:)));
+        else
+            data(i,:) = [0,0];
+        end
     end
         
     response(out,data);
