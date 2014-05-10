@@ -6,14 +6,14 @@ function initialize_simulation()
     millis = 2000;
     safetydist = 0.04;
 
-    numcars = 100;
+    numcars = 1000;
 
     [nodes,edges] = read_graph(...
         '../data/Zurich_Residential_Roads+_Simplified_Ways_Single_Component_Graph_Speeds.txt');
 
     numnodes = size(nodes,2);
     
-    [sources,sinks] = generate_routes();
+    [sources,sinks] = generate_routes(numcars);
     
 %     sources = floor(rand(numcars,1)*numnodes + 1);        
 %     sinks = floor(rand(numcars,1)*numnodes + 1);   
@@ -41,6 +41,7 @@ function initialize_simulation()
         cars(i,1:2) = nodes(:,int32(sources(i,:)));
         cars(i,3) = 1;
         t = graph{paths(1,i)};
+        paths(2,i)
         t = t(paths(2,i));
         t(i) = 1;
     end
