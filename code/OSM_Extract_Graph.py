@@ -2,6 +2,23 @@
 import sys
 import xml.etree.ElementTree as ETree
 
+# This data was extracted from the Zurich.osm file.
+# The listed speeds are average maxspeeds for the indivudual road types
+# rounded to the next multiple of 5.0
+max_speeds = {
+    'primary_link': 50.0,
+    'residential': 30.0,
+    'secondary_link': 50.0,
+    'primary': 50.0,
+    'motorway_link': 75.0,
+    'motorway': 90.0,
+    'trunk': 70.0,
+    'trunk_link': 60.0,
+    'unclassified': 40.0,
+    'tertiary': 50.0,
+    'secondary': 50.0,
+    None: 50.0                  # this serves as the default value, we should never have to use this
+}
 
 def print_help():
     """
@@ -29,7 +46,7 @@ def main():
         return
 
     in_file = sys.argv[1]
-    out_file = sys.argv[2] if len(sys.argv) > 2 else '{}_Graph.txt'.format(rem_ext(in_file))
+    out_file = sys.argv[2] if len(sys.argv) > 2 else '{}_Graph_Speeds.txt'.format(rem_ext(in_file))
 
     # Parse the input file.
     tree = ETree.parse(in_file)
@@ -57,12 +74,29 @@ def main():
     f.write(str(num_nds) + '\n')
 
     for way in root.iter('way'):
+        highway = None
+        maxspeed = None
+
+        for tag in way.iter('tag'):
+            if tag.get('k') == 'highway':
+                highway = tag.get('v')
+            elif tag.get('k') == 'maxspeed':
+                maxspeed = float(tag.get('v'))
+
+        if highway is None:
+            print "Warning: way {} has no highway tag".format(tag.way('id'))
+
+        if maxspeed is None:
+            if highway not in max_speeds:
+                highway = None
+            maxspeed = max_speeds[highway]
+
         prev_nd = None
 
-        # For each way print all edges between the referenced nodes.
+        # For each way print all edges between the referenced nodes and the allowed speed.
         for nd in way.iter('nd'):
             if prev_nd is not None:
-                f.write('{} {}\n'.format(prev_nd.attrib['ref'], nd.attrib['ref']))
+                f.write('{} {} {}\n'.format(prev_nd.attrib['ref'], nd.attrib['ref'], maxspeed))
 
             prev_nd = nd
 
