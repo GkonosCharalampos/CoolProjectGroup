@@ -37,7 +37,6 @@
             var request = httpGet(host + "1");
             var obj = $.parseJSON(request);
             console.log("init");
-//            console.log(obj);
             return obj;
         };
 
@@ -47,7 +46,6 @@
             var request = httpGet(host + "2");
             var obj = $.parseJSON(request);
             console.log("update");
-//            console.log(obj);
             return obj;
         };
 
@@ -88,7 +86,7 @@
             // markers.clearLayers();
             // // alert();
 
-            console.log('redrawn');
+            // console.log('redrawn');
 
             for (var i = 0; i < Math.min(circles.length, coords.length); i++)
             {
@@ -99,8 +97,20 @@
                 // var curr_y = rnd_y * NE[1] + (1 - rnd_y) * SW[1];
 
                 // circles[i].setLatLng([curr_x, curr_y]);
-                circles[i].setLatLng(coords[i]);
-                circles[i].redraw();
+                if (coords[i][0] > 40)
+                {
+                    circles[i].setLatLng(coords[i]);
+                    circles[i].redraw();
+                }
+                else
+                {
+                    console.log('detected [0,0]');
+                }
+
+                // else
+                // {
+                //     circles[i].
+                // }
             };
         };
 
@@ -144,9 +154,9 @@
 
     var coords = init_cars();
     add_circles(coords);
-    
+
     sleep(millis, update_circles);
-    
+
 //    for (var i = 0; i < 1000; i++) {
 //        sleep(1000 * i, update_circles);
 //    };

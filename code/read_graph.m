@@ -5,7 +5,7 @@ function [nodes, edges, node_id_to_idx, idx_to_node_id] = read_graph(filename)
 	nodes = fscanf(in_file, '%f %f %f\n', [3, num_nodes]);
 
 	num_edges = fscanf(in_file, '%d\n', 1);
-	edges = fscanf(in_file, '%f %f\n', [2, num_edges]);
+	edges = fscanf(in_file, '%f %f %f\n', [3, num_edges]);
 
 	fclose(in_file);
 
