@@ -9,15 +9,17 @@ function initialize_simulation()
     numcars = 100;
 
     [nodes,edges] = read_graph(...
-        '../data/Zurich_Residential_Roads+_Simplified_Ways_Single_Component_Graph.txt');
+        '../data/Zurich_Residential_Roads+_Simplified_Ways_Single_Component_Graph_Speeds.txt');
 
     numnodes = size(nodes,2);
-
-    sources = floor(rand(numcars,1)*numnodes + 1);
-    sinks = floor(rand(numcars,1)*numnodes + 1);
-
-    paths = dijkstra_mx(nodes,edges,sources',sinks');
-
+    
+    [sources,sinks] = generate_routes();
+    
+%     sources = floor(rand(numcars,1)*numnodes + 1);        
+%     sinks = floor(rand(numcars,1)*numnodes + 1);   
+     
+    paths = a_star(nodes,edges,sources',sinks');         
+    
     graph = cell(numnodes,1);
 
     for i = 1:numnodes
