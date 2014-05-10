@@ -8,20 +8,23 @@ import java.util.Date;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-listener = ServerSocket(8787);
+clearvars;
+global graph cars nodes paths millis tottime over;
 
-state = [];
+tottime = 0;
 
+listener = ServerSocket(int32(8282));
+
+init = 0;
 json = Gson;
 
-stop = 0;
-while not(stop)
+while 1
     
     socket = listener.accept();
-    
+     
     instream = socket.getInputStream();
     outstream = socket.getOutputStream();
-    
+ 
     in = BufferedReader(InputStreamReader(instream));
     
     message = -1;
@@ -30,40 +33,37 @@ while not(stop)
         line = line.substring(5,6);
         message = char(line);
     end
+     
+    out = PrintWriter(outstream);        
     
-    out = PrintWriter(outstream);
-    
-    if(message == '1') 
-        [nodes,sources,sinks,paths,delay] = initialize_simulation();        
+    if message == '1'
         'initialize_simulation'
-    elseif (message == '2')
-        [nodes,sources,sinks,paths,delay] = ... 
-                advance_simulation(nodes,sources,sinks,paths,delay);        
-        'advance_simulation'
-    elseif (message == '0')       
+        init = 1;
+        initialize_simulation();             
+    elseif message == '0'
         'stop simulation'
-        stop = 1;
-        continue
-    else
+        init = 0;
+        break;
+    elseif message ~= '2'
         'skip'
-        continue
+        continue;
     end
-   
-    numcars = size(sources,1);
-    data = zeros(numcars,2);
     
-    for i = 1:numcars
-%       sources(i);
-%       nodes(2:3,int32(sources(i)));
-        if(int32(sources(i)) ~= 0)
-            data(i,:) = nodes(2:3,int32(sources(i,:)));
-        else
-            data(i,:) = [0,0];
-        end
-    end
+    'advance simulation'
+    
+    if init                
+        data = cars(:,1:2);
+        if over
+           response(out,[]);            
+           break;
+        end        
         
-    response(out,data);
+        response(out,data);            
+        advance_simulation();  
+    end
     
     socket.close();       
 end
 listener.close();
+
+tottime/millis/size(cars,1)

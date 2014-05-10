@@ -16,7 +16,10 @@
     <div id="map"></div>
 
     <script>
-        var host = "http://localhost:8787/";
+        var port = 8282;
+        var host = "http://localhost:"+port+"/";
+        var stop = false;
+        var millis = 50;
 
         function httpGet(theUrl)
         {
@@ -33,7 +36,8 @@
         {
             var request = httpGet(host + "1");
             var obj = $.parseJSON(request);
-            console.log(obj);
+            console.log("init");
+//            console.log(obj);
             return obj;
         };
 
@@ -42,7 +46,8 @@
         {
             var request = httpGet(host + "2");
             var obj = $.parseJSON(request);
-            console.log(obj);
+            console.log("update");
+//            console.log(obj);
             return obj;
         };
 
@@ -69,7 +74,7 @@
                 // var curr_y = rnd_y * NE[1] + (1 - rnd_y) * SW[1];
 
                 // L.circle([curr_x, curr_y], 30, {
-                L.circle(coords[i], 30, {
+                L.circle(coords[i], 5, {
                       stroke: false,
                     // color: 'red',
                     fillColor: 'red',
@@ -103,6 +108,12 @@
         function update_circles()
         {
             var coords = update_cars();
+            if(coords == null) {
+                stop = true;
+                console.log("Simulation stopped!");
+                return;
+            }
+            sleep(millis,update_circles);
             redraw_circles(coords);
         };
 
@@ -133,10 +144,12 @@
 
     var coords = init_cars();
     add_circles(coords);
-
-    for (var i = 0; i < 1000; i++) {
-        sleep(300 * i, update_circles);
-    };
+    
+    sleep(millis, update_circles);
+    
+//    for (var i = 0; i < 1000; i++) {
+//        sleep(1000 * i, update_circles);
+//    };
         // L.polygon([
         //     [51.509, -0.08],
         //     [51.503, -0.06],
