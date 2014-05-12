@@ -13,33 +13,35 @@ global graph cars nodes paths millis tottime over;
 
 tottime = 0;
 
-listener = ServerSocket(int32(8282));
+listener = ServerSocket(int32(8383));
 
 init = 0;
 json = Gson;
 
+c = onCleanup(@()listener.close());
+
 while 1
-    
+
     socket = listener.accept();
-     
+
     instream = socket.getInputStream();
     outstream = socket.getOutputStream();
- 
+
     in = BufferedReader(InputStreamReader(instream));
-    
+
     message = -1;
     line = in.readLine();
     if(~isempty(line) && ~isnumeric(line) && line.length() >= 6)
         line = line.substring(5,6);
         message = char(line);
     end
-     
-    out = PrintWriter(outstream);        
-    
+
+    out = PrintWriter(outstream);
+
     if message == '1'
         'initialize_simulation'
         init = 1;
-        initialize_simulation();             
+        initialize_simulation();
     elseif message == '0'
         'stop simulation'
         init = 0;
@@ -48,21 +50,21 @@ while 1
         'skip'
         continue;
     end
-    
+
     'advance simulation'
-    
-    if init                
+
+    if init
         data = cars(:,1:2);
         if over
-           response(out,[]);            
+           response(out,[]);
            break;
-        end        
-        
-        response(out,data);            
-        advance_simulation();  
+        end
+
+        response(out,data);
+        advance_simulation();
     end
-    
-    socket.close();       
+
+    socket.close();
 end
 listener.close();
 

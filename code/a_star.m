@@ -12,16 +12,16 @@ function paths = a_star(nodes, edges, sources, sinks)
 
 
     % Input Error Checking ******************************************************
-    error(nargchk(4, 4, nargin));
-    error(nargchk(0, 1, nargout));
+    narginchk(4, 4);
+    nargoutchk(0, 1);
 
-    [dim_nodes, num_nodes] = size(nodes);
+    [dim_nodes, ~] = size(nodes);
 
     if dim_nodes ~= 3
         error('nodes must contain 3 columns.');
     end
 
-    [dim_edges, num_edges] = size(edges);
+    [dim_edges, ~] = size(edges);
 
     if dim_edges ~= 2 && dim_edges ~= 3
         error('edges must contain 2 or 3 columns.');
