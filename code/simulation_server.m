@@ -39,7 +39,7 @@ while 1
     if message == '1'
         'initialize_simulation'
         init = 1;
-        initialize_simulation(2500);
+        initialize_simulation(1000);
     elseif message == '0'
         'stop simulation'
         init = 0;

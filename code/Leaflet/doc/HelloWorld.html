@@ -141,21 +141,14 @@
         }).addTo(map);
 
         var markers = new L.LayerGroup().addTo(map);
-        // var circles = new Array();
 
-        // L.marker(zurich_lat_lon).addTo(map)
-        //     .bindPopup("<b>Hello world!</b><br />I am a popup.").openPopup();
+        var NE = [47.431870, 8.605620];
+        var SW = [47.322731, 8.465100];
 
+        var coords = init_cars();
+        add_circles(coords);
 
-
-
-    var NE = [47.431870, 8.605620];
-    var SW = [47.322731, 8.465100];
-
-    var coords = init_cars();
-    add_circles(coords);
-
-    sleep(millis, update_circles);
+        sleep(millis, update_circles);
 
 //    for (var i = 0; i < 1000; i++) {
 //        sleep(1000 * i, update_circles);

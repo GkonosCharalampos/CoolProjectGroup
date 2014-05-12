@@ -6,20 +6,15 @@
 #include <deque>
 #include <algorithm>
 #include <cmath>
-#include <iostream>
 #include <map>
-#include <tr1/unordered_map>
 #include <functional>
-#include <cstring>
-#include <cassert>
 #include "mex.h"
 
 /******************************************************************************
 * Using directives                                                            *
 ******************************************************************************/
-using std::map;      using std::vector;  using std::pair; using std::priority_queue;
-using std::ios_base; using std::cin;     using std::cout; using std::endl;
-using std::deque;    using std::greater; using std::max;  using std::make_pair;
+using std::map;   using std::vector;  using std::pair; using std::priority_queue;
+using std::deque; using std::greater; using std::max;  using std::make_pair;
 
 /******************************************************************************
 * Typedefs                                                                    *
@@ -43,9 +38,12 @@ struct Node
 };
 
 
-const double radius = 6371.0; // Radius of the earth in km
-vector<Node> nodes;
-vector<map<int, double> > dist_map;
+/******************************************************************************
+* Global variables                                                            *
+******************************************************************************/
+const double radius = 6371.0;        // Radius of the earth in km
+vector<Node> nodes;                  // Global vector keeping track of all nodes
+vector<map<int, double> > dist_map;  // Global look up table for computed distances.
 
 
 /**
@@ -53,7 +51,7 @@ vector<map<int, double> > dist_map;
  * @param  deg degrees
  * @return radians
  */
-double deg2rad(double deg) {
+inline double deg2rad(double deg) {
     return deg * (M_PI / 180.0);
 }
 
@@ -80,19 +78,20 @@ double hav_dist(const Node& u, const Node& v)
 
 /**
  * Computes the distance between two points with given lat and lon using the law of cosines.
- * @param  u First Node
- * @param  v Second Node
- * @return   Distance
+ * Makes use of dist_map to speed up future computations.
+ * @param  u_idx Index of the first Node
+ * @param  v_idx Index of the second Node
+ * @return       Distance
  */
-double cos_dist(int u_id, int v_id)
+double cos_dist(int u_idx, int v_idx)
 {
-    if (dist_map[u_id].find(v_id) != dist_map[u_id].end())
+    if (dist_map[u_idx].find(v_idx) != dist_map[u_idx].end())
     {
-        return dist_map[u_id][v_id];
+        return dist_map[u_idx][v_idx];
     }
 
-    const Node& u = nodes[u_id];
-    const Node& v = nodes[v_id];
+    const Node& u = nodes[u_idx];
+    const Node& v = nodes[v_idx];
 
     double lat1 = deg2rad(u.lat);
     double lat2 = deg2rad(v.lat);
@@ -100,54 +99,93 @@ double cos_dist(int u_id, int v_id)
     double dLon = deg2rad(v.lon - u.lon);
 
     double dist = acos(sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(dLon)) * radius;
-    dist_map[u_id][v_id] = dist_map[v_id][u_id] = dist;
+    dist_map[u_idx][v_idx] = dist_map[v_idx][u_idx] = dist;
 
     return dist;
 }
 
 
-double eucl_dist(const Node& u, const Node& v)
+/**
+ * Approximates the distance between two points with given lat and lon using their euclidean distance.
+ * Makes use of dist_map to speed up future computations.
+ * @param  u_idx Index of the first Node
+ * @param  v_idx Index of the second Node
+ * @return       Distance
+ */
+double eucl_dist(int u_idx, int v_idx)
 {
-    double delta_lat = u.lat - v.lat;
-    double delta_lon = u.lon - v.lon;
-
-    return sqrt(delta_lat * delta_lat + delta_lon * delta_lon);
-}
-
-
-void print_path(const deque<int>& path)
-{
-    for (int i = 0; i < path.size(); ++i)
+    if (dist_map[u_idx].find(v_idx) != dist_map[u_idx].end())
     {
-        mexPrintf("%d%c", path[i], i + 1 < path.size() ? ' ' : '\n');
+        return dist_map[u_idx][v_idx];
     }
+
+    const Node& u = nodes[u_idx];
+    const Node& v = nodes[v_idx];
+
+    double lat1 = deg2rad(u.lat);
+    double lat2 = deg2rad(v.lat);
+
+    double lon1 = deg2rad(u.lon);
+    double lon2 = deg2rad(v.lon);
+
+    double x = (lon2 - lon1) * cos((lat1 + lat2) / 2);
+    double y = (lat2 - lat1);
+    double dist = sqrt(x * x + y * y) * radius;
+
+    dist_map[u_idx][v_idx] = dist_map[v_idx][u_idx] = dist;
+
+    return dist;
 }
 
-void print_path(const vector<long long>& path)
-{
-    for (int i = 0; i < path.size(); ++i)
-    {
-        mexPrintf("%lld%c", path[i], i + 1 < path.size() ? ' ' : '\n');
-    }
-}
 
-void print_array(int num_snk, double *snk_ptr)
-{
-    for (int i = 0; i < num_snk; ++i)
-    {
-        mexPrintf("%lld%c", (long long) snk_ptr[i], i + 1 < num_snk ? ' ' : '\n');
-    }
-}
+// The following functions were used for debugging, uncomment if needed.
+
+// void print_path(const deque<int>& path)
+// {
+//     for (int i = 0; i < path.size(); ++i)
+//     {
+//         mexPrintf("%d%c", path[i], i + 1 < path.size() ? ' ' : '\n');
+//     }
+// }
+
+// void print_path(const vector<long long>& path)
+// {
+//     for (int i = 0; i < path.size(); ++i)
+//     {
+//         mexPrintf("%lld%c", path[i], i + 1 < path.size() ? ' ' : '\n');
+//     }
+// }
+
+// void print_array(int num_snk, double *snk_ptr)
+// {
+//     for (int i = 0; i < num_snk; ++i)
+//     {
+//         mexPrintf("%lld%c", (long long) snk_ptr[i], i + 1 < num_snk ? ' ' : '\n');
+//     }
+// }
 
 
-vector<vector<long long> > run_dijkstra(int num_nodes, double *nodes_ptr, int num_edges, double *edges_ptr,
+/**
+ * A Star implementation.
+ * It constructs a graph from arrays of nodes and edges.
+ * Then it runs one iteration for each src/snk pair.
+ * It returns the resulting shortest paths.
+ * @param  num_nodes number of nodes
+ * @param  nodes_ptr pointer to node array
+ * @param  num_edges number of edges
+ * @param  edges_ptr pointer to edge array
+ * @param  num_src   number of sources
+ * @param  src_ptr   pointer to source array
+ * @param  num_snk   number of sinks
+ * @param  snk_ptr   pointer to sink array
+ * @return           Matrix M containing ids of the nodes
+ *                   on the shortest paths. M[i][j] is the
+ *                   jth node on the path from src[i] to snk[i].
+ */
+vector<vector<long long> > run_a_star(int num_nodes, double *nodes_ptr, int num_edges, double *edges_ptr,
     int num_src, double *src_ptr, int num_snk, double *snk_ptr)
 {
     // maps id numbers to indices
-    // mexPrintf("Printing sources: ");
-    // print_array(num_src, src_ptr);
-    // mexPrintf("Printing sinks: ");
-    // print_array(num_snk, snk_ptr);
     map<long long, int> id_to_idx;
     map<int, long long> idx_to_id;
 
@@ -155,9 +193,6 @@ vector<vector<long long> > run_dijkstra(int num_nodes, double *nodes_ptr, int nu
     nodes = vector<Node>(num_nodes);
     dist_map = vector<map<int, double> > (num_nodes);
 
-
-    // vector<vector<double> > dist_mat(num_nodes, vector<double>(num_nodes, INFINITY));
-    //
 
     // read in all node information, store current index with id
     for (int i = 0; i < num_nodes; ++i)
@@ -173,8 +208,11 @@ vector<vector<long long> > run_dijkstra(int num_nodes, double *nodes_ptr, int nu
     }
 
     // allocate space for the adjacency map
-    double max_speed = 0.0;
     vector<vector<pair<int, double> > > G(num_nodes);
+
+    // Keep track of the maximum speed encountered.
+    // Important for the heuristic to stay admissible.
+    double max_speed = 0.0;
 
     // read in the edges, map ids to indices and store them in the adjacency list
     for (int i = 0; i < num_edges; ++i)
@@ -197,38 +235,41 @@ vector<vector<long long> > run_dijkstra(int num_nodes, double *nodes_ptr, int nu
     // vector storing the parent in the induces spanning tree of every node
     vector<int> parent(num_nodes, -1);
 
-    // run dijkstra for every node
+    // run a_star for every src node
     for (int id_src = 0; id_src < num_src; ++id_src)
     {
+        // retrieve indices of src and snk
         int src_id = src_ptr[id_src];
         int src_idx = id_to_idx[src_id];
 
         int snk_id = snk_ptr[id_src];
         int snk_idx = id_to_idx[snk_id];
 
-        // allocate the heap, together with vectors keeping track of distances
+        // allocate the heap, together with vectors keeping track of the used time
         // and if we visited the current node already
         MinHeap heap;
         vector<double> used_time(num_nodes, INFINITY);
         vector<int> visited(num_nodes);
 
-        // initialize with the current node
+        // initialize with the current src node
         parent[src_idx] = src_idx;
         used_time[src_idx] = 0.0;
         State start = make_pair(0.0, src_idx);
 
         heap.push(start);
-        // while the heap is not empty
+
         while (!heap.empty())
         {
-            // pop the first element and check if we visited it already
+            // pop the first element and retrieves the index
             State u = heap.top(); heap.pop();
             int u_idx = u.second;
 
+            // break if we reached the sink
             if (u_idx == snk_idx)
                 break;
 
-            // if yes continue popping the next element
+            // otherwise continue popping the next element if we
+            // visited this node already
             if (visited[u_idx])
                 continue;
 
@@ -245,22 +286,25 @@ vector<vector<long long> > run_dijkstra(int num_nodes, double *nodes_ptr, int nu
                 if (visited[adj_idx])
                     continue;
 
-                double curr_time = cos_dist(u_idx, adj_idx) / speed;
+                // compute the time it takes to get from node u to the current node
+                double curr_time = eucl_dist(u_idx, adj_idx) / speed;
 
+                // compute the total time to get to this node from the source
                 double new_time = curr_time + used_time[u_idx];
 
-                // if the new distance is better than the one stored update it
-                // and push it on the heap
+                // if the new time is smaller than the one stored update it
+                // and push the node on the heap together with the estimated
+                // time to the sink
                 if (new_time < used_time[adj_idx])
                 {
                     parent[adj_idx] = u_idx;
                     used_time[adj_idx] = new_time;
-                    heap.push(make_pair(new_time + cos_dist(adj_idx, snk_idx) / max_speed, adj_idx));
+                    heap.push(make_pair(new_time + eucl_dist(adj_idx, snk_idx) / max_speed, adj_idx));
                 }
             }
          }
 
-         deque<int> path;
+         // check if we were not able to reach the sink
          int curr_idx = id_to_idx[snk_ptr[id_src]];
          if (used_time[curr_idx] == INFINITY)
          {
@@ -268,6 +312,9 @@ vector<vector<long long> > run_dijkstra(int num_nodes, double *nodes_ptr, int nu
             continue;
          }
 
+         // reconstruct path by following the route induced by the parent vector
+         // we use a deque here so that we can efficiently do push_front operations
+         deque<int> path;
          while (true)
          {
             path.push_front(curr_idx);
@@ -278,34 +325,40 @@ vector<vector<long long> > run_dijkstra(int num_nodes, double *nodes_ptr, int nu
             curr_idx = parent[curr_idx];
          }
 
-         // mexPrintf("Printing Path %d: ", id_src + 1);
-         // print_path(path);
-
+         // finally retrieve the actual id of each node on the path
+         // and store it in the shortest paths matrix
         for (int i = 0; i < path.size(); ++i)
         {
             shortest_paths[id_src].push_back(idx_to_id[path[i]]);
         }
-
-         // mexPrintf("Printing Path %d: ", id_src + 1);
-         // print_path(shortest_paths[id_src]);
     }
 
     return shortest_paths;
 }
 
 
+/**
+ * Required mexFunction, so that Matlab can communicate with this program.
+ * @param nlhs number of output arguments
+ * @param plhs pointer to output arguments
+ * @param nrhs number of input arguments
+ * @param prhs pointer to input arguments
+ */
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
-    if (nrhs < 2 || nrhs > 4)
+    // Do very limited sanity checks.
+    // Note that in general you should never call this function directly,
+    // always use the a_star.m wrapper providing much more exhaustive input checks.
+    if (nrhs != 4)
     {
-        mexErrMsgIdAndTxt("MATLAB:dijkstra:nargin",
-            "DIJKSTRA requires between two and four input arguments.");
+        mexErrMsgIdAndTxt("MATLAB:a_star:nargin",
+            "A STAR requires four input arguments.");
     }
 
     if (nlhs < 1 || nlhs > 2)
     {
-        mexErrMsgIdAndTxt("MATLAB:dijkstra:nargout",
-            "DIJKSTRA requires one or two output arguments.");
+        mexErrMsgIdAndTxt("MATLAB:a_star:nargout",
+            "A STAR requires one or two output arguments.");
     }
 
 
@@ -313,45 +366,46 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     {
         if (!mxIsDouble(prhs[i]))
         {
-            mexErrMsgIdAndTxt("MATLAB:dijkstra:inputNotDouble",
-                "DIJKSTRA requires the input to be doubles.");
+            mexErrMsgIdAndTxt("MATLAB:a_star:inputNotDouble",
+                "A STAR requires the input to be doubles.");
         }
     }
 
+    // get double pointers to the input arguments
     double *nodes_ptr = mxGetPr(prhs[0]);
     double *edges_ptr = mxGetPr(prhs[1]);
     double *src_ptr = mxGetPr(prhs[2]);
     double *snk_ptr = mxGetPr(prhs[3]);
 
+    // get dimensions of the input
     int num_nodes = mxGetN(prhs[0]);
     int num_edges = mxGetN(prhs[1]);
     int num_src = mxGetN(prhs[2]);
     int num_snk = mxGetN(prhs[3]);
 
-    // mexPrintf("%d %d %d %d\n", num_nodes, num_edges, num_src, num_snk);
-
-    vector<vector<long long> > shortest_paths = run_dijkstra(num_nodes, nodes_ptr, num_edges, edges_ptr,
+    // run a_star on the input
+    vector<vector<long long> > shortest_paths = run_a_star(num_nodes, nodes_ptr, num_edges, edges_ptr,
         num_src, src_ptr, num_snk, snk_ptr);
 
+    // extract max_path_length, necessary for dynamically allocating memory afterwards
     int max_path_length = 0;
     for (int i = 0; i < num_src; ++i)
     {
         max_path_length = max(max_path_length, (int) shortest_paths[i].size());
     }
 
+    // create the output matrix
     plhs[0] = mxCreateDoubleMatrix(max_path_length, num_src, mxREAL);
+
+    // print size of the output dimension
+    // also useful to see that this routine is about to finish
     mexPrintf("num_src: %d\n", num_src);
     mexPrintf("max_path_length: %d\n", max_path_length);
 
+    // retrieve a double pointer to the output matrix and write the computed paths to it
     double *path_ptr = mxGetPr(plhs[0]);
 
-    // mexPrintf("Writing to Array\n");
     for (int i = 0; i < num_src; ++i)
-    {
         for (int j = 0; j < shortest_paths[i].size(); ++j)
-        {
-            // mexPrintf("%lld%c", shortest_paths[i][j], j + 1 < shortest_paths[i].size() ? ' ' : '\n');
             path_ptr[i * max_path_length + j] = shortest_paths[i][j];
-        }
-    }
 }

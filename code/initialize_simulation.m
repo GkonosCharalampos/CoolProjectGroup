@@ -10,11 +10,11 @@ function initialize_simulation(numcars)
 
 
     [nodes,edges] = read_graph(...
-        '../data/Zurich_Residential_Roads+_Simplified_Ways_Single_Component_Graph_Speeds.txt');
+        '../data/Graph_Tunnel.txt');
 
     numnodes = size(nodes,2);
 
-    % [sources,sinks] = generate_routes(numcars);
+    [sources,sinks] = generate_routes(numcars);
 
     % sources = floor(rand(numcars,1)*numnodes + 1);
     % sinks = floor(rand(numcars,1)*numnodes + 1);

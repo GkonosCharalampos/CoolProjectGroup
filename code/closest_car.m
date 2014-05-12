@@ -1,23 +1,36 @@
-function [mindist] = closest_car(i,car,u,v)
+function [min_dist] = closest_car(i, curr_car_pos, u, v)
 
-    global graph cars nodes paths millis tottime;
+    global graph cars nodes paths;
 
-    t = graph{u};
-    t = t(v);
+    edge = graph{u}(v);
+    % edge = edge(v);
 
-    keyset = t.keys();
+    % keyset = edge.keys();
 
-    mindist = inf;
+    min_dist = inf;
 
-    if size(keyset, 2) == 0
+    % size(keyset)
+
+    if size(edge) < 2
         return
     end
 
-    dista = distance(nodes(:,u),car);
-    for h = 1:size(keyset,2)
-        distb = distance(nodes(:,u),cars(keyset{h},1:2));
-        if keyset{h} ~= i && distb > dista
-            mindist = min(mindist,distb-dista);
+    dista = distance(nodes(:,u), curr_car_pos);
+
+    for car_id = edge.keys()
+        if car_id{1} == i
+            continue
+        end
+
+        distb = distance(nodes(:,u), cars(car_id{1}, 1:2));
+
+        if distb > dista
+            min_dist = min(min_dist, distb - dista);
         end
     end
+end
+
+
+function dist = euclid_squared(u, v)
+    dist = sum((u - v) .^ 2);
 end
