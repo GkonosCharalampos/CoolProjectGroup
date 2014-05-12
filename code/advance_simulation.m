@@ -1,5 +1,5 @@
 function advance_simulation()
-    global graph cars nodes paths millis tottime safetydist defaultspeed over max_speeds;
+    global graph cars nodes paths millis travel_times safetydist defaultspeed over max_speeds;
 
 
     num_cars = size(paths, 2);
@@ -45,7 +45,7 @@ function advance_simulation()
 
             closestcar = closest_car(i,curr_coords,u, v);
             curr_coords = nodes(:,v);
-            path_idx = path_idx+1;
+            path_idx = path_idx + 1;
 
             if time <= 0 || closestcar < inf
                 flag = 0;
@@ -67,7 +67,7 @@ function advance_simulation()
             continue;
         end
 
-        tottime = tottime + millis;
+        travel_times(h) = travel_times(h) + millis;
 
         curr_coords = cars(i,1:2);
         next = nodes(:,paths(path_idx+1,i));
