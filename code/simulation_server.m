@@ -9,9 +9,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 clearvars;
-global graph cars nodes paths millis tottime over;
-
-tottime = 0;
+global graph cars nodes paths millis travel_times over;
 
 listener = ServerSocket(int32(8383));
 
@@ -41,7 +39,7 @@ while 1
     if message == '1'
         'initialize_simulation'
         init = 1;
-        initialize_simulation();
+        initialize_simulation(2500);
     elseif message == '0'
         'stop simulation'
         init = 0;
@@ -68,4 +66,4 @@ while 1
 end
 listener.close();
 
-tottime/millis/size(cars,1)
+fprintf('mean: %d\n std: %d\n', mean(travel_times), int32(std(travel_times)));
