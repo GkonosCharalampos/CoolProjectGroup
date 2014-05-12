@@ -21,7 +21,7 @@ function paths = a_star(nodes, edges, sources, sinks)
         error('nodes must contain 3 columns.');
     end
 
-    [dim_edges, ~] = size(edges);
+    [dim_edges, num_edges] = size(edges);
 
     if dim_edges ~= 2 && dim_edges ~= 3
         error('edges must contain 2 or 3 columns.');
@@ -67,8 +67,8 @@ function paths = a_star(nodes, edges, sources, sinks)
     % % End (Input Error Checking) ************************************************
 
     if dim_edges == 2
-        paths = dijkstra_mx(nodes, edges, sources, sinks);
-    else
-        paths = dijkstra_mx_time(nodes, edges, sources, sinks);
+        edges = [edges; ones(1, num_edges)];
     end
+
+    paths = a_star_mx(nodes, edges, sources, sinks);
 end
