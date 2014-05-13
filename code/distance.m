@@ -1,4 +1,12 @@
-function [dist] = distance(u,v)
+function [dist] = distance(u, v)
+%DISTANCE Computes the distance between two points given as latitude and longitude.
+% It approximates the law of cosines formula by a modified euclidean distance for performance
+% reasons.
+% [dist] = distance(u, v)
+%     u    = first node
+%     v    = second node
+%     dist = computed distance
+
     radius = 6371.0;
 
     lat1 = (pi/180) * (u(1));

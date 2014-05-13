@@ -16,11 +16,18 @@
     <div id="map"></div>
 
     <script>
-        var port = 8383;
-        var host = "http://localhost:" + port + "/";
-        var stop = false;
-        var millis = 50;
+        /**  Global variables */
+        var port = 8383;                                // port to communicate
+        var host = "http://localhost:" + port + "/";    // host name
+        var stop = false;                               // indicator variable
+        var millis = 50;                                // update interval
 
+
+        /**
+         * Issues an HTML GET request to the specified URL
+         * @param  {string} theUrl Requested URL
+         * @return {string}        response text
+         */
         function httpGet(theUrl)
         {
             var xmlHttp = null;
@@ -32,6 +39,12 @@
         };
 
 
+        /**
+         * Initializes the cars on the map.
+         * Requests the page "1" from the host to do so.
+         * Then parses the response as a JSON object and returns it.
+         * @return {Double Array} Initial car coordinates
+         */
         function init_cars()
         {
             var request = httpGet(host + "1");
@@ -41,6 +54,12 @@
         };
 
 
+        /**
+         * Updates the cars on the map.
+         * Requests the page "2" from the host to do so.
+         * Then parses the response as a JSON object and returns it.
+         * @return {Double Array} Updated car coordinates
+         */
         function update_cars()
         {
             var request = httpGet(host + "2");
@@ -62,59 +81,42 @@
             }, millis);
         };
 
+        /**
+         * This function adds circles at the specified coordinates.
+         * @param {Double Array} coords Coordinate Vector
+         */
         function add_circles(coords) {
             for (var i = 0; i < coords.length; i++)
             {
-                // var rnd_x = coords[i][0];
-                // var rnd_y = coords[i][1];
-
-                // var curr_x = rnd_x * NE[0] + (1 - rnd_x) * SW[0];
-                // var curr_y = rnd_y * NE[1] + (1 - rnd_y) * SW[1];
-
-                // L.circle([curr_x, curr_y], 30, {
                 L.circle(coords[i], 30, {
                       stroke: false,
-                    // color: 'red',
                     fillColor: 'red',
                     fillOpacity: 0.5
                 }).addTo(markers);
             };
         };
 
+
+        /**
+         * Updates the circles on the map by changing their coordinates
+         * and redrawing them.
+         * @param  {[Double Array]} coords [New positions]
+         */
         function redraw_circles(coords) {
             var circles = markers.getLayers();
-            // markers.clearLayers();
-            // // alert();
-
-            // console.log('redrawn');
 
             for (var i = 0; i < Math.min(circles.length, coords.length); i++)
             {
-                // var rnd_x = coords[i][0];
-                // var rnd_y = coords[i][1];
-
-                // var curr_x = rnd_x * NE[0] + (1 - rnd_x) * SW[0];
-                // var curr_y = rnd_y * NE[1] + (1 - rnd_y) * SW[1];
-
-                // circles[i].setLatLng([curr_x, curr_y]);
-                if (true || coords[i][0] > 40)
-                {
-                    circles[i].setLatLng(coords[i]);
-                    circles[i].redraw();
-                }
-                else
-                {
-                    console.log('detected [0,0]');
-                }
-
-                // else
-                // {
-                //     circles[i].
-                // }
+                circles[i].setLatLng(coords[i]);
+                circles[i].redraw();
             };
         };
 
 
+        /**
+         * Wrapper around redraw circles that detects the end of the simulation.
+         * This is needed to be able to sleep recursively.
+         */
         function update_circles()
         {
             var coords = update_cars();
@@ -127,11 +129,15 @@
             redraw_circles(coords);
         };
 
+
+        /** Zurichs position in latitude and longitude */
         var zurich_lat_lon = [47.3685586, 8.5404434];
 
+        /** Leaflet map object */
         var map = L.map('map').setView(zurich_lat_lon, 13);
 
 
+        /** initializes the map to the correct view and sets copyright */
         L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
             maxZoom: 18,
             attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
@@ -140,37 +146,15 @@
             id: 'examples.map-9ijuk24y'
         }).addTo(map);
 
+        /** marker layer holding the circles in the end */
         var markers = new L.LayerGroup().addTo(map);
 
-        var NE = [47.431870, 8.605620];
-        var SW = [47.322731, 8.465100];
-
+        /** initialization of the cars */
         var coords = init_cars();
         add_circles(coords);
 
+        /** starting the update process */
         sleep(millis, update_circles);
-
-//    for (var i = 0; i < 1000; i++) {
-//        sleep(1000 * i, update_circles);
-//    };
-        // L.polygon([
-        //     [51.509, -0.08],
-        //     [51.503, -0.06],
-        //     [51.51, -0.047]
-        // ]).addTo(map).bindPopup("I am a polygon.");
-
-
-        // var popup = L.popup();
-
-        // function onMapClick(e) {
-        //     popup
-        //         .setLatLng(e.latlng)
-        //         .setContent("You clicked the map at " + e.latlng.toString())
-        //         .openOn(map);
-        // }
-
-        // map.on('click', onMapClick);
-
     </script>
 </body>
 </html>

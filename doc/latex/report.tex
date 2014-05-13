@@ -10,6 +10,7 @@
 \usepackage{listings}
 \usepackage{pdfpages}
 \usepackage{booktabs}
+\usepackage[toc,page]{appendix}
 \usepackage[hyperref=auto,style=alphabetic,backend=bibtex]{biblatex}
 \usepackage[colorlinks]{hyperref}
 % \usepackage[numbered,framed]{matlab-prettifier}
@@ -32,7 +33,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % \newpage
-% \section*{Agreement for free-download}
+% \section{Agreement for free-download}
 % \bigskip
 
 
@@ -79,16 +80,16 @@
 
 
 \section{Abstract}
-In this paper, a traffic simulation for the city of Z\"urich is developed. The representation of traffic flows is a very useful tool for urban planning and is essential in cases that large scale construction works are planned. In the case of the city of Z\"urich, we were inspired from a proposed project for the construction of an underground tunnel that would connect the East and West side of the lake. The goal of this paper is to examine and derive conclusions whether such a tunnel would affect (improve or worsen) the traffic problem of the city center. More specifically, the traveling times from certain starting points to ending ones will be examined before and after the construction of such a technical work. At the end of the simulation, the results will be analyzed.
+In this paper, a traffic simulation for the city of Z\"urich is developed. The representation of traffic flows is a very useful tool for urban planning and is essential in cases that large scale construction works are planned. In the case of the city of Z\"urich, we were inspired from a proposed project for the construction of an underground tunnel that would connect the East and West side of the lake. The goal of this paper is to examine and derive conclusions whether such a tunnel would affect (improve or even worsen) the traffic situation of the city centre. More specifically, the travelling times from certain starting points to ending ones will be examined before and after the construction of such a technical work. At the end of the simulation, the results will be analysed.
 
-As an initial step, the route of every car is computed, using the shortest path algorithm (A* search algorithm), in the reduced road network that is selected for the project. Then, in order to model traffic propagation on given road segments, Cellular Automaton model is used. Finally, the planned tunnel will be introduced not in one, but more possible solutions, and its impact on the traffic situation for each one of them will be examined.
+As an initial step, the route of every car is computed, using the shortest path algorithm (A* search algorithm), in the reduced road network that is selected for the project. Then, in order to model traffic propagation on given road segments, Cellular Automata model is used. Finally, the planned tunnel will be introduced not in one, but more possible solutions, and its impact on the traffic situation for each one of them will be examined.
 
 
 \section{Individual contributions}
 In our project, all four team members were active and contributed in the development of the simulation. More specifically, MATLAB coding and implementation was done by Jan D\"orrie and Simone Forte. Charalampos Gkonos and Athina Korfiati were responsible for the data acquisition and data editing. The final analysis of the results, as well as the report preparation was performed by the whole team.
 
 \section{Introduction and Motivations}
-Traffic is a serious problem. Almost every big city in the world, no matter if it is in a developed or a developing country has to face this problem. Even in Z\"urich, the biggest city in Switzerland, where a very good system of public transportation exists and serves every corner of the city, the problem of traffic is not completely solved. Sometimes there is a need to look for innovative thoughts that may lead to perfect solutions. But first of all it is obvious that you have to evaluate all these alternatives in order to take the right decision. In this particular case study, a Highway Tunnel, proposed by the ARGE Z\"uriring consortium (G\"uller G\"uller architecture urbanism, Synergo, Heierli Engineering AG, Roland M\"uller, Metron AG, Ecoplan) to the Department of Civil Engineering of the Canton of Z\"urich in 2002 is examined. According to this ``Highway Tunnel Z\"urich'' project, a tunnel that connects the two sides of the Lake of Z\"urich is proposed among some other alternatives. (G\"uller G\"uller architecture urbanism, 2001-2002)
+Traffic is a serious problem. Almost every big city in the world, no matter if it is in a developed or a developing country has to face this problem. Even in Z\"urich, the biggest city in Switzerland, where a very good system of public transportation exists and serves every corner of the city, the problem of traffic is not completely solved. Sometimes there is a need to look for innovative thoughts that may lead to perfect solutions. But first of all it is obvious that you have to evaluate all these alternatives in order to take the right decision. In this particular case study, a Highway Tunnel, proposed by the ARGE Z\"uriring consortium (G\"uller G\"uller architecture urbanism, Synergo, Heierli Engineering AG, Roland M\"uller, Metron AG, Ecoplan) to the Department of Civil Engineering of the Canton of Z\"urich in 2002 is examined. According to this “Highway Tunnel Z\"urich” project, a tunnel that connects the two sides of the Lake of Z\"urich is proposed among some other alternatives. (G\"uller G\"uller architecture urbanism, 2001-2002)
 
 \begin{figure}[ht]
 	\begin{center}
@@ -98,12 +99,18 @@ Traffic is a serious problem. Almost every big city in the world, no matter if i
 	\label{fig:tunnel}
 \end{figure}
 
-With the present case study the goal is to develop an appropriate and efficient traffic model based on the available public data. This model can be used to visualize the existing traffic situation in the city of Z\"urich, as well as to describe the expected results after the construction of the tunnel. Based on this knowledge, it is possible to draw useful conclusions, which can be analyzed in order to evaluate the impact of such a tunnel. As far as it concerns the expected results, it is not easy to make a prediction. The problem is that the construction of huge technical works has always many more impacts in an area than the obvious (i.e. possible rise of the population living near the tunnel exits). An in-depth study is always needed which takes into account both qualitative and quantitative factors like potential future development opportunities, construction cost, maintenance and safety and many more. Nevertheless, for the purpose of the present case study there was no need for a so detailed analysis and for that reason there is a higher probability of misjudgment.
+\subsection{Fundamental questions} % (fold)
+\label{sub:fundamental_questions}
+The basic question that this paper aims to answer is whether the construction of a tunnel will eventually improve or worsen the traffic situation in the centre of the city and in what way is this correlated with the number of the cars that use the network. The goal is to develop an appropriate and efficient traffic model based on the available public data. This model can be used to visualise the existing traffic situation in the city of Z\"urich, as well as to describe the expected results after the construction of the tunnel. Based on this knowledge, it is possible to draw useful conclusions, which can be analysed in order to evaluate the impact of such a tunnel.
+% subsection fundamental_questions (end)
 
+\subsection{Expected results} % (fold)
+\label{sub:expected_results}
+As far as the expected results are concerned, it is not easy to make a prediction apart from the most obvious one, that the existence of a tunnel would improve the travelling time and reduce the traffic in the centre. The problem is that the construction of huge technical works has always many more impacts in an area than the obvious (i.e. possible rise of the population living near the tunnel exits). An in-depth study is always needed which takes into account both qualitative and quantitative factors like potential future development opportunities, construction cost, maintenance and safety and many more. Nevertheless, for the purpose of the present case study there was no need for a so detailed analysis and for that reason there is a higher probability of misjudgement.
+% subsection expected_results (end)
 
 \section{Description of the Model}
-A classical urban transportation planning system model usually follows four steps:
-
+A classical urban transportation planning system model usually follows four steps\cite{mcnally2008four}:
 \begin{itemize}
 	\item \textbf{Trip generation} determines the frequency of origins or destinations of trips in each zone by trip purpose, as a function of land uses and household demographics, and other socio-economic factors.
 
@@ -111,12 +118,13 @@ A classical urban transportation planning system model usually follows four step
 
 	\item \textbf{Mode choice} computes the proportion of trips between each origin and destination that use a particular transportation mode. (This modal model may be of the logit form, developed by Nobel Prize winner Daniel McFadden.)
 
-	\item \textbf{Route assignment} allocates trips between an origin and destination by a particular mode to a route. Often (for highway route assignment) Wardrop's principle of user equilibrium is applied (equivalent to a Nash equilibrium), wherein each driver (or group) chooses the shortest (travel time) path, subject to every other driver doing the same. The difficulty is that travel times are a function of demand, while demand is a function of travel time, the so-called bi-level problem. Another approach is to use the Stackelberg competition model, where users (``followers'') respond to the actions of a ``leader'', in this case for example a traffic manager. This leader anticipates on the response of the followers.”  (Wikipedia, n.d.)
+	\item \textbf{Route assignment} allocates trips between an origin and destination by a particular mode to a route. Often (for highway route assignment) Wardrop's principle of user equilibrium is applied (equivalent to a Nash equilibrium), wherein each driver (or group) chooses the shortest (travel time) path, subject to every other driver doing the same. The difficulty is that travel times are a function of demand, while demand is a function of travel time, the so-called bi-level problem. Another approach is to use the Stackelberg competition model, where users ("followers") respond to the actions of a ``leader'', in this case for example a traffic manager. This leader anticipates on the response of the followers.”  (Wikipedia, n.d.)
 \end{itemize}
 
-The model we developed is loosely based on cellular automata. Every car is thus represented as an automaton which acts according to a very simple update rule; all the transitions will happen on a graph which represents the road network of a city, in this particular case this will be the city of Z\"urich. The model has two main parts:
+The model that is developed for this case study is based on cellular automata. Every car is thus represented as an automaton which acts according to a very simple update rule; all the transitions will happen on a graph which represents the road network of a city, in this particular case this will be the city of Z\"urich. The model has three main parts:
+
 \begin{itemize}
-\item \textbf{Journey generation}: for every automaton we will generate a path that it will follow; this route will be fixed at the beginning and it will stay unchanged for the rest of the simulation. The way this routes will be generated will be based on a probability distribution defined by the CSVs files population.csv and companies.csv; what we aimed at modeling was the everyday morning journey of people from their houses to the workplace; we will thus have that the sources of the paths will be generated with a probability proportional to the number of people living in a certain area of the city and the destinations will be generated with a probability proportional to the number of companies situated in a certain area. Additionally to the city of Z\"urich we also took into account the population living in smaller towns south of the river which we aggregated as incoming and outgoing from the major highways located in the south of Z\"urich; this has been necessary in order to evaluate the impact of a tunnel in that area.
+\item \textbf{Trip generation}: For every automaton we will generate a path that it will follow; this route will be decided at the beginning and it will stay unchanged for the rest of the simulation. The way this routes will be generated will be based on a probability distribution defined by the use of statistical data\cite{ wiki:zurich} for the total of 34 neighbourhoods of the city of Z\"urich (file: population.csv) and the statistical data \cite{moneyhouse} of the number of new companies that are founded in each area (file: companies.csv). What we aimed to model was the everyday morning journey of people from their houses to the workplace; we will thus have that the sources of the paths will be generated with a probability proportional to the number of people living in a certain area of the city and the destinations will be generated with a probability proportional to the number of companies situated in a certain area. Additionally to the city of Z\"urich we also took into account the population living in smaller towns southern of the river which we aggregated as incoming and 4 outgoing from the major highways located in the south of Z\"urich; this has been necessary in order to evaluate the impact of a tunnel in that area.
 A visualization of this can be seen in figure \ref{fig:pop_data}.
 
 \begin{figure}[tbh]
@@ -127,12 +135,15 @@ A visualization of this can be seen in figure \ref{fig:pop_data}.
 	\label{fig:pop_data}
 \end{figure}
 
-\item \textbf{Route planning}:  After the intended journey for an automaton has been generated we will generate the actual path that the automaton intends to follow. We have in particular considered a realistic assumption that the paths will be decided at the beginning of the journey to be the shortest path between two locations and will remain unchanged regardless of the traffic situation of a road.
+\item \textbf{Trip distribution}:  After the intended journey for an automaton has been generated we will generate the actual path that the automaton intends to follow. We have in particular considered a realistic assumption that the paths will be decided at the beginning of the journey to be the shortest path between two locations and will remain unchanged regardless of the traffic situation of a road. For the creation of these paths the A* search algorithm has been used.
 \item \textbf{Journey execution}: At this point the automaton knows the actual path it wants to follow. It will thus be initialized in its starting location and at every time step, having length in milliseconds equal to \textbf{m}, it will simply advance of a quantity equal to the minimum between the distance it can travel given that it travel for \textbf{m} milliseconds at the maximum speed allowed by the road it is following and the distance of the next car on the path minus a safety distance. To decide in which order update the cars in a timestep we will simply iterate on the cars in a random order and all the decisions for a car will be taken considering the position of the other cars at the time in which the car is updated.
+
+\item \textbf{Route assignment}
+At this point the automaton knows the actual path it wants to follow. It will thus be initialized in its starting location and at every time step, having length in milliseconds equal to m, it will simply advance of a quantity equal to the minimum between the distance it can travel given that it travel for m milliseconds at the maximum speed allowed by the road it is following and the distance of the next car on the path minus a safety distance. To decide in which order to update the cars in a timestep, we will simply iterate on the cars in a random order and all the decisions for a car will be taken considering the position of the other cars at the time in which the car is updated.
 \end{itemize}
 
 \section{Implementation}
-We started out by obtaining the OpenStreetMap file that contains Z\"urich.
+We started out by obtaining the OpenStreetMap\cite{osm} file that contains Z\"urich.
 In order to do so we downloaded a recent Switzerland extract from \emph{Geofabrik} \cite{geofab} and then extracted the boundaries of Z\"urich with the tool \emph{Osmconvert} \cite{osmconv}.
 Afterwards we used another tool called \emph{Osmosis}\cite{oosmosis} to limit our data to the roads in Z\"urich.
 Furthermore we modified the data using \emph{JOSM} which enabled us to simplify the road network, making our algorithms more efficient.
@@ -157,19 +168,22 @@ After each simulation step we passed the current car locations as a JSON object 
 For encoding the object as a JSON string we made use of Google's Gson library\cite{gson}.
 The Javascript implementation then made sure to display the cars at the right locations on the map.
 \section{Simulation Results and Discussion}
-\subsection{In correlation with the number of cars}
-The figure that is presented below, shows that there is a strong correlation between the travelling time and the number of cars that use the road network. Of course this is something that is expected mainly because of the limitations of the existing road network (there is no projection for a huge number of cars in the city of Z\"urich). More specifically there is an average increase of around 25\% to the travelling time when the number of cars is going from 400 to 1600, more than 50\% when the number of cars changes from 2000 to 4000, and finally a massive 100\% when the number of cars increases from 400 to 4000.
+To be able to interpret the results of the modelled simulation in a sensible way, the results are divided in three individual cases. The connecting point of the three cases is the average travel time, that in the end is the parameter that defines the level of success or failure of the individual simulation tests. In the first case, the correlation between the actual number of the cars that use the road network and the travel time they need in order to reach their destination is examined. In the second case, the tunnel is introduced in the existing road network and this time the simulation model calculates the travel time in correlation with some different possible positions for its construction. In the third case, the comparing model parameter is once again the average time needed for cars to move from the traffic generation points to their destination points at first in the current situation where the tunnel does not exist and then in the case the tunnel is constructed.
 
+\subsection{In correlation with the number of cars}
+In this first simulation evaluation the travel time is examined using different numbers of cars that actually use the existing road network of the city of Z\"urich. As it was initially expected and also in the end is confirmed by the results of the simulation (as shown in Figure \ref{fig:travel_times}) there is a strong correlation between the travelling time and the number of cars that use the road network. Of course this is something that is expected mainly because of the capacity limitations of the existing road network (there is no prediction for a large number of cars in the city of Z\"urich). More specifically, there is an average increase of around 25\% of the travel time when the number of cars is raising from 400 to 1600, more than 50\% when the number of cars changes from 2000 to 4000, and finally a massive one of 100\% when the number of cars increases from 400 to 4000.
 \begin{figure}[tb]
 	\begin{center}
 		\includegraphics[width=\linewidth]{Travel_Times.eps}
 	\end{center}
 	\caption{Plot of travel times with regard to increasing number of cars on the road}
-	\label{fig:figure1}
+	\label{fig:travel_times}
 \end{figure}
 
 \subsection{In correlation with the chosen position for the tunnel construction}
-From the sixteen different scenarios that are evaluated it comes out as a conclusion that with the available data, the alternative positions for the tunnel construction do not influence that much the average time that a driver needs to move from his starting point to his destination. This probably happens because all these sixteen alternatives are close enough as it can be seen in Figure \ref{fig:tunnel_pos}.
+In this simulation test the travel time is evaluated with respect to the position of the tunnel. Here, sixteen different scenarios are examined, which result from all the possible combinations of eight starting/ending points on the east (four points) and west side (four points) of the lake of Z\"urich.
+
+From the sixteen different scenarios that are evaluated and are presented in Table 1 it comes out as a conclusion that with the available data, the alternative positions for the tunnel construction do not influence significantly the average time that a driver needs to move from his starting point to his destination. This is probably due to the fact that all sixteen tunnel position alternatives are close enough to each other as it can be seen in Figure \ref{fig:tunnel_pos}.
 
 \begin{figure}[htb]
 	\begin{center}
@@ -179,6 +193,8 @@ From the sixteen different scenarios that are evaluated it comes out as a conclu
 	Red dots show possible starting positions and yellow dots possible end positions.}
 	\label{fig:tunnel_pos}
 \end{figure}
+
+The general outcome of this evaluation is that the tunnel is expected to be used in each case by the same people, no matter its exact position. Its impact on the travel time will be almost the same in all sixteen cases, no matter what the number of cars using the road network.
 
 \subsection{In correlation with the construction of the tunnel in general} % (fold)
 \label{sub:in_correlation_with_the_construction_of_the_tunnel_in_general}
@@ -215,16 +231,14 @@ In the last simulation the average travelling time for the drivers before and af
 	\end{center}
 \end{table}
 
-
-
-From the examination and interpretation of this simulation results it is obvious that travel time is reduced in the case the tunnel is built. The whole traffic situation in the centre of the city is improved and there are less conjunction points compared to the initial situation. More specifically, it is underlined by the results that...
-
+From the examination and interpretation of this simulation results it is obvious that travel time is not always reduced when the tunnel is built. The whole traffic situation in the centre of the city remains almost the same as it can be seen in Table \ref{tab:times}. The comparison of the average time travel before the construction and after reveals that travel time depends on the number of cars that use the road network. More specifically, when the number of cars is limited (500 cars) the construction of the tunnel does not improve the travel time, but in thirteen out of sixteen cases the situation is even worse. In the intermediate case where the number of cars is higher (1000 cars) an amelioration of the situation is observed for every possible node combination. In the case where the number of cars is even higher (2000 cars) the travel time is reduced in eleven out of sixteen cases but not significantly.
 % subsection in_correlation_with_the_construction_of_the_tunnel_in_general (end)
 
 \section{Summary and Outlook}
-The present case study tries to visualize the traffic situation in the city of Z\"urich and evaluate the impact that a tunnel construction could have on the travel time, especially between the two sides of the lake. The research question defined in the beginning of the research was answered and the conclusion was that the tunnel could improve the travel time for the benefit of the drivers using the road network of Z\"urich. For the implementation of the simulation, many consumptions were made (e.g. for the population and the travelling purpose) and the data used were limited. For this reason, there are still enough points for improvement.
+The present case study tries to visualize the traffic situation in the city of Z\"urich and evaluate the impact that a tunnel construction could have on the travel time, especially between the two sides of the lake. The research questions defined in the beginning of the research were answered and the conclusion is that the tunnel could improve the travel time for the benefit of the drivers using the road network of Z\"urich only in specific cases, for instance when the load of the network is relatively low (approximately 1000 cars).
 
-However, the simulation model is a good base for testing real and official data for the city of Z\"urich and this is yet a point for future exploration. Future work on this topic should include better data acquisition. The data should refer to a wider region and not focus specifically in the city of Z\"urich. The main reason for that is that such a technical work is usually expected to influence a wider area and a significantly larger amount of people.
+For the implementation of the simulation, many consumptions were made (e.g. for the population and the travelling purpose) and the data used were limited. For this reason, there are still enough points for improvement. However, the simulation model is a good base for testing real and official data for the city of Z\"urich and this is yet a point for future exploration. Future work on this topic should include better data acquisition. The data should refer to a wider region and not focus specifically in the city of Z\"urich. The main reason for that is that such a technical work is usually expected to influence a wider area and a significantly larger amount of people.
+
 
 
 % \section{References}
@@ -233,9 +247,10 @@ However, the simulation model is a good base for testing real and official data 
 \printbibliography
 
 
-\section*{Appendix}
+\newpage
+\begin{appendices}
 
-	\subsection*{C++ Code}
+	\section{C++ Code}
 	\lstset{language=C++,
 		basicstyle=\footnotesize,
 		keywordstyle=\color{blue}\footnotesize,
@@ -244,10 +259,11 @@ However, the simulation model is a good base for testing real and official data 
 		morecomment=[l][\color{magenta}]{\#}
 	}
 
-	\subsubsection*{A Star C++ Implementation}
+	\subsection*{A Star C++ Implementation}
 		\lstinputlisting{../../code/a_star_mx.cpp}
 
-	\subsection*{MATLAB Code}
+	\newpage
+	\section{MATLAB Code}
 		\lstset{language=Matlab,%
 	    %basicstyle=\color{red},
 	    breaklines=true,%
@@ -255,8 +271,6 @@ However, the simulation model is a good base for testing real and official data 
 	    keywordstyle=\color{blue},%
 	    morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
 	    identifierstyle=\color{black},%
-	    stringstyle=\color{red},
-	    commentstyle=\color{ForestGreen},%
 	    % showstringspaces=false,%without this there will be a symbol in the places where there is a space
 	    % numbers=left,%
 	    % numberstyle={\tiny \color{black}},% size of the numbers
@@ -265,9 +279,102 @@ However, the simulation model is a good base for testing real and official data 
 	    %emph=[2]{word1,word2}, emphstyle=[2]{style},
 	}
 
-		\subsubsection*{MATLAB Wrapper}
+		\subsection*{MATLAB Wrapper around A Star Implementation}
 		\lstinputlisting{../../code/a_star.m}
 
+		\newpage
+		\subsection*{Advances the simulation by one step}
+			\lstinputlisting{../../code/advance_simulation.m}
+
+		\newpage
+		\subsection*{Computes the distance to the closest car}
+			\lstinputlisting{../../code/closest_car.m}
+
+		\newpage
+		\subsection*{Computes the distance between two given points}
+			\lstinputlisting{../../code/distance.m}
+
+		\newpage
+		\subsection*{Randomly generates start and end positions from the provided population data}
+			\lstinputlisting{../../code/generate_routes.m}
+
+		\newpage
+		\subsection*{Returns the current time as a string}
+			\lstinputlisting{../../code/get_time_str.m}
+
+		\newpage
+		\subsection*{Initializes the simulation}
+			\lstinputlisting{../../code/initialize_simulation.m}
+
+		\newpage
+		\subsection*{Moves a given car to the next edge}
+			\lstinputlisting{../../code/move_car.m}
+
+		\newpage
+		\subsection*{Reads in the specified graph file in MATLAB data structures}
+			\lstinputlisting{../../code/read_graph.m}
+
+		\newpage
+		\subsection*{Sends a response in JSON format over the socket}
+			\lstinputlisting{../../code/response.m}
+
+		\newpage
+		\subsection*{Runs the simulation without visualization}
+			\lstinputlisting{../../code/simulation_no_server.m}
+
+		\newpage
+		\subsection*{Runs the simulation with visualization}
+			\lstinputlisting{../../code/simulation_server.m}
+
+		\newpage
+		\subsection*{Runs the simulation with text inputs}
+			\lstinputlisting{../../code/text_simulation_server.m}
+
+	\newpage
+	\section{Python Code}
+ 		\lstset{language=Python}
+
+		\subsection*{Fix OpenStreetMap Ways}
+			\lstinputlisting{../../code/OSM_Fix_Ways.py}
+
+		\newpage
+		\subsection*{Get the maximum allowed speeds from OpenStreetMap}
+			\lstinputlisting{../../code/OSM_Get_MaxSpeeds.py}
+
+		\newpage
+		\subsection*{Extract Graph from OpenStreetMap}
+			\lstinputlisting{../../code/OSM_Extract_Graph.py}
+
+		\newpage
+		\subsection*{Remove unwanted Nodes from OpenStreetMap}
+			\lstinputlisting{../../code/OSM_Remove_Unwanted_Nodes.py}
+
+		\newpage
+		\subsection*{Simplify an OpenStreetMap Graph}
+			\lstinputlisting{../../code/OSM_Simplify_Graph.py}
+
+	\newpage
+	\section{JavaScript Code}
+		\lstdefinelanguage{JavaScript}{
+		  keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
+		  % keywordstyle=\color{blue}\bfseries,
+		  ndkeywords={class, export, boolean, throw, implements, import, this},
+		  % ndkeywordstyle=\color{darkgray}\bfseries,
+		  % identifierstyle=\color{black},
+		  sensitive=false,
+		  comment=[l]{//},
+		  morecomment=[s]{/*}{*/},
+		  % commentstyle=\color{purple}\ttfamily,
+		  % stringstyle=\color{red}\ttfamily,
+		  morestring=[b]',
+		  morestring=[b]"
+		}
+
+ 		\lstset{language=JavaScript}
+
+		\subsection*{Visualize the Simulation}
+			\lstinputlisting{../../code/leaflet/doc/VisualizeSimulation.html}
+\end{appendices}
 \end{document}
 
 
