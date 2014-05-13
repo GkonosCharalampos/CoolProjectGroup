@@ -82,7 +82,7 @@
 \section{Abstract}
 In this paper, a traffic simulation for the city of Z\"urich is developed. The representation of traffic flows is a very useful tool for urban planning and is essential in cases that large scale construction works are planned. In the case of the city of Z\"urich, we were inspired from a proposed project for the construction of an underground tunnel that would connect the East and West side of the lake. The goal of this paper is to examine and derive conclusions whether such a tunnel would affect (improve or even worsen) the traffic situation of the city centre. More specifically, the travelling times from certain starting points to ending ones will be examined before and after the construction of such a technical work. At the end of the simulation, the results will be analysed.
 
-As an initial step, the route of every car is computed, using the shortest path algorithm (A* search algorithm), in the reduced road network that is selected for the project. Then, in order to model traffic propagation on given road segments, Cellular Automata model is used. Finally, the planned tunnel will be introduced not in one, but more possible solutions, and its impact on the traffic situation for each one of them will be examined.
+As an initial step, the route of every car is computed, using the shortest path algorithm (A* search algorithm \cite{astar}), in the reduced road network that is selected for the project. Then, in order to model traffic propagation on given road segments, Cellular Automata model is used. Finally, the planned tunnel will be introduced not in one, but more possible solutions, and its impact on the traffic situation for each one of them will be examined.
 
 
 \section{Individual contributions}
@@ -118,7 +118,7 @@ A classical urban transportation planning system model usually follows four step
 
 	\item \textbf{Mode choice} computes the proportion of trips between each origin and destination that use a particular transportation mode. (This modal model may be of the logit form, developed by Nobel Prize winner Daniel McFadden.)
 
-	\item \textbf{Route assignment} allocates trips between an origin and destination by a particular mode to a route. Often (for highway route assignment) Wardrop's principle of user equilibrium is applied (equivalent to a Nash equilibrium), wherein each driver (or group) chooses the shortest (travel time) path, subject to every other driver doing the same. The difficulty is that travel times are a function of demand, while demand is a function of travel time, the so-called bi-level problem. Another approach is to use the Stackelberg competition model, where users ("followers") respond to the actions of a ``leader'', in this case for example a traffic manager. This leader anticipates on the response of the followers.”  (Wikipedia, n.d.)
+	\item \textbf{Route assignment} allocates trips between an origin and destination by a particular mode to a route. Often (for highway route assignment) Wardrop's principle of user equilibrium is applied (equivalent to a Nash equilibrium), wherein each driver (or group) chooses the shortest (travel time) path, subject to every other driver doing the same. The difficulty is that travel times are a function of demand, while demand is a function of travel time, the so-called bi-level problem. Another approach is to use the Stackelberg competition model, where users ("followers") respond to the actions of a ``leader'', in this case for example a traffic manager. This leader anticipates on the response of the followers.
 \end{itemize}
 
 The model that is developed for this case study is based on cellular automata. Every car is thus represented as an automaton which acts according to a very simple update rule; all the transitions will happen on a graph which represents the road network of a city, in this particular case this will be the city of Z\"urich. The model has three main parts:
@@ -131,7 +131,7 @@ A visualization of this can be seen in figure \ref{fig:pop_data}.
 	\begin{center}
 		\includegraphics[width=\linewidth]{../img/population_distribution.png}
 	\end{center}
-	\caption{Visualization of the chosen population and company hubs. Red dots how population areas and yellow dots company ares.}
+	\caption{Visualization of the chosen population and company hubs. Red dots show population areas and yellow dots company ares.}
 	\label{fig:pop_data}
 \end{figure}
 
@@ -140,13 +140,22 @@ A visualization of this can be seen in figure \ref{fig:pop_data}.
 
 \item \textbf{Route assignment}
 At this point the automaton knows the actual path it wants to follow. It will thus be initialized in its starting location and at every time step, having length in milliseconds equal to m, it will simply advance of a quantity equal to the minimum between the distance it can travel given that it travel for m milliseconds at the maximum speed allowed by the road it is following and the distance of the next car on the path minus a safety distance. To decide in which order to update the cars in a timestep, we will simply iterate on the cars in a random order and all the decisions for a car will be taken considering the position of the other cars at the time in which the car is updated.
+A visualization of the whole modeling process can be seen in Figure \ref{fig:run_sim}.
+
+\begin{figure}[tb]
+	\begin{center}
+		\includegraphics[width=\linewidth]{../img/running_simulation.png}
+	\end{center}
+	\caption{Running Traffic Simulation. Each car is represented by a circle.}
+	\label{fig:run_sim}
+\end{figure}
 \end{itemize}
 
 \section{Implementation}
 We started out by obtaining the OpenStreetMap\cite{osm} file that contains Z\"urich.
 In order to do so we downloaded a recent Switzerland extract from \emph{Geofabrik} \cite{geofab} and then extracted the boundaries of Z\"urich with the tool \emph{Osmconvert} \cite{osmconv}.
 Afterwards we used another tool called \emph{Osmosis}\cite{oosmosis} to limit our data to the roads in Z\"urich.
-Furthermore we modified the data using \emph{JOSM} which enabled us to simplify the road network, making our algorithms more efficient.
+Furthermore we modified the data using \emph{JOSM}\cite{JOSM} which enabled us to simplify the road network, making our algorithms more efficient.
 Once we removed small isolated connected components resulting from clipping the data to Z\"urich with self-written Python scripts
 we extracted a simple graph structure, just containing a list of nodes and edges.
 Each node was annotated with its id, as well as latitude and longitude.
@@ -158,15 +167,15 @@ We considered implementing this algorithm directly in MATLAB, however the inconv
 However, by turning it into a mex file, we were still able to call this function directly from our MATLAB code, hence the integration was very smooth.
 We further wrote a wrapper around this function in MATLAB, that would perform sanity checks on the input and exit gracefully in case there is an error.
 
-The MATLAB implementation mostly consists of two parts, an initialization part and an update part. In the initialization the main data structures and parameters of the model are set up; we thus generate the routes for every car, picking starting and ending location according to a probability distribution specified by the CSVs files (reference...) and the actual path will be generated by computing the shortest path between the two locations. In the update part, for every timestep, we compute the new locations of every car according to the way specified earlier in the Description of the Model section and we compute the new GEO coordinates of the cars which are then given back to the Javascript client.
+The MATLAB implementation mostly consists of two parts, an initialization part and an update part. In the initialization the main data structures and parameters of the model are set up; we thus generate the routes for every car, picking starting and ending location according to a probability distribution specified by the CSVs files and the actual path will be generated by computing the shortest path between the two locations. In the update part, for every timestep, we compute the new locations of every car according to the way specified earlier in the Description of the Model section and we compute the new GEO coordinates of the cars which are then given back to the JavaScript client.
 
-Finally we made use of the Javascript Library \emph{Leaflet}\cite{leaflet} to visualize our results on the actual map of Z\"urich.
-We enabled communication between MATLAB and Javascript using the included Java classes for socket communication.
-The Javascript code issues HTTP GET requests telling the MATLAB implementation which methods to perform.
+Finally we made use of the JavaScript Library \emph{Leaflet}\cite{leaflet} to visualize our results on the actual map of Z\"urich.
+We enabled communication between MATLAB and JavaScript using the included Java classes for socket communication.
+The JavaScript code issues HTTP GET requests telling the MATLAB implementation which methods to perform.
 The actions include initializing and advancing the simulation.
 After each simulation step we passed the current car locations as a JSON object through the socket.
 For encoding the object as a JSON string we made use of Google's Gson library\cite{gson}.
-The Javascript implementation then made sure to display the cars at the right locations on the map.
+The JavaScript implementation then made sure to display the cars at the right locations on the map.
 \section{Simulation Results and Discussion}
 To be able to interpret the results of the modelled simulation in a sensible way, the results are divided in three individual cases. The connecting point of the three cases is the average travel time, that in the end is the parameter that defines the level of success or failure of the individual simulation tests. In the first case, the correlation between the actual number of the cars that use the road network and the travel time they need in order to reach their destination is examined. In the second case, the tunnel is introduced in the existing road network and this time the simulation model calculates the travel time in correlation with some different possible positions for its construction. In the third case, the comparing model parameter is once again the average time needed for cars to move from the traffic generation points to their destination points at first in the current situation where the tunnel does not exist and then in the case the tunnel is constructed.
 
@@ -243,7 +252,6 @@ For the implementation of the simulation, many consumptions were made (e.g. for 
 
 % \section{References}
 
-\newpage
 \printbibliography
 
 
