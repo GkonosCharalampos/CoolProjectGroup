@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 clearvars;
+% the meaning of these variables is explained in initialize simulation
 global graph cars nodes paths millis travel_times over;
 
 listener = ServerSocket(int32(8383));
