@@ -43,7 +43,7 @@ struct Node
 ******************************************************************************/
 const double radius = 6371.0;        // Radius of the earth in km
 vector<Node> nodes;                  // Global vector keeping track of all nodes
-vector<map<int, double> > dist_map;  // Global look up table for computed distances.
+vector<map<int, double> > dist_map;  // Global look up table for computed distances
 
 
 /**
@@ -77,7 +77,8 @@ double hav_dist(const Node& u, const Node& v)
 
 
 /**
- * Computes the distance between two points with given lat and lon using the law of cosines.
+ * Computes the distance between two points with given lat and lon using the law
+ * of cosines.
  * Makes use of dist_map to speed up future computations.
  * @param  u_idx Index of the first Node
  * @param  v_idx Index of the second Node
@@ -98,7 +99,8 @@ double cos_dist(int u_idx, int v_idx)
 
     double dLon = deg2rad(v.lon - u.lon);
 
-    double dist = acos(sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(dLon)) * radius;
+    double dist = acos(sin(lat1) * sin(lat2) +
+        cos(lat1) * cos(lat2) * cos(dLon)) * radius;
     dist_map[u_idx][v_idx] = dist_map[v_idx][u_idx] = dist;
 
     return dist;
@@ -106,7 +108,8 @@ double cos_dist(int u_idx, int v_idx)
 
 
 /**
- * Approximates the distance between two points with given lat and lon using their euclidean distance.
+ * Approximates the distance between two points with given lat and lon using
+ * their euclidean distance.
  * Makes use of dist_map to speed up future computations.
  * @param  u_idx Index of the first Node
  * @param  v_idx Index of the second Node
@@ -182,8 +185,9 @@ double eucl_dist(int u_idx, int v_idx)
  *                   on the shortest paths. M[i][j] is the
  *                   jth node on the path from src[i] to snk[i].
  */
-vector<vector<long long> > run_a_star(int num_nodes, double *nodes_ptr, int num_edges, double *edges_ptr,
-    int num_src, double *src_ptr, int num_snk, double *snk_ptr)
+vector<vector<long long> > run_a_star(int num_nodes, double *nodes_ptr,
+    int num_edges, double *edges_ptr, int num_src, double *src_ptr,
+    int num_snk, double *snk_ptr)
 {
     // maps id numbers to indices
     map<long long, int> id_to_idx;
@@ -299,7 +303,8 @@ vector<vector<long long> > run_a_star(int num_nodes, double *nodes_ptr, int num_
                 {
                     parent[adj_idx] = u_idx;
                     used_time[adj_idx] = new_time;
-                    heap.push(make_pair(new_time + eucl_dist(adj_idx, snk_idx) / max_speed, adj_idx));
+                    heap.push(make_pair(new_time + eucl_dist(adj_idx, snk_idx)
+                        / max_speed, adj_idx));
                 }
             }
          }
@@ -308,7 +313,8 @@ vector<vector<long long> > run_a_star(int num_nodes, double *nodes_ptr, int num_
          int curr_idx = id_to_idx[snk_ptr[id_src]];
          if (used_time[curr_idx] == INFINITY)
          {
-            mexPrintf("No Path between %lld and %lld\n", idx_to_id[src_idx], idx_to_id[curr_idx]);
+            mexPrintf("No Path between %lld and %lld\n", idx_to_id[src_idx],
+                idx_to_id[curr_idx]);
             continue;
          }
 
@@ -384,8 +390,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     int num_snk = mxGetN(prhs[3]);
 
     // run a_star on the input
-    vector<vector<long long> > shortest_paths = run_a_star(num_nodes, nodes_ptr, num_edges, edges_ptr,
-        num_src, src_ptr, num_snk, snk_ptr);
+    vector<vector<long long> > shortest_paths = run_a_star(num_nodes, nodes_ptr,
+        num_edges, edges_ptr, num_src, src_ptr, num_snk, snk_ptr);
 
     // extract max_path_length, necessary for dynamically allocating memory afterwards
     int max_path_length = 0;
