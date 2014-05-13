@@ -8,6 +8,7 @@ import java.util.Date;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+% the meaning of these variables is explained in initialize simulation
 global graph cars nodes paths millis tottime safetydist defaultspeed;
 
 json = Gson;
