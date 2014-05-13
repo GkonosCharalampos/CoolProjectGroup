@@ -1,0 +1,107 @@
+\documentclass[11pt]{article}
+\usepackage{geometry}
+\geometry{letterpaper}
+
+\usepackage{graphicx}
+\usepackage{amssymb, amsmath}
+\usepackage{epstopdf}
+% \usepackage{natbib}
+\usepackage[hyperref=auto,style=alphabetic,backend=bibtex]{biblatex}
+\usepackage[colorlinks]{hyperref}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+\addbibresource{report.bib}
+
+%\title{Title}
+%\author{Name 1, Name 2}
+%\date{date}
+
+\begin{document}
+
+
+\input{cover}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\section*{Agreement for free-download}
+\bigskip
+
+
+\bigskip
+
+
+\large We hereby agree to make our source code for this project freely available for download from the web pages of the SOMS chair.
+Furthermore, we assure that all source code is written by ourselves and is not violating any copyright restrictions.
+
+\begin{center}
+
+\bigskip
+
+
+\bigskip
+
+Jan Wilken D\"{o}rrie \hfill Simone Forte \hfill Charalampos Gkonos \hfill Athina Korfiati
+
+\end{center}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+% IMPORTANT
+% you MUST include the ETH declaration of originality here; it is available for download on the course website or at http://www.ethz.ch/faculty/exams/plagiarism/index_EN; it can be printed as pdf and should be filled out in handwriting
+
+
+%%%%%%%%%% Table of content %%%%%%%%%%%%%%%%%
+
+\tableofcontents
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\section{Abstract}
+
+\section{Individual contributions}
+
+\section{Introduction and Motivations}
+
+\section{Description of the Model}
+
+\section{Implementation}
+We started out by extracting the OpenStreetMap file that contains Zurich.
+In order to do so we downloaded a recent Switzerland extract from Geofabrik \cite{geofab} and then extracted the boundaries of Zurich with the tool \emph{Osmconvert} \cite{osmconv}.
+Afterwards we used another tool called \emph{Osmosis} to limit our data to the roads in Zurich.
+Furthermore we modified the data using JOSM which enabled us to simplify the road network, making our algorithms more efficient.
+Once we removed small isolated connected components resulting from clipping the data to Zurich we wrote an A-Star algorithm implementation in C++.
+We considered doing this directly in Matlab, however the performance loss was too large, so that we wrote the mex file.
+
+[Model MATLAB Part]
+
+
+
+Finally we made use of the Javascript Library Leaflet to visualize our results on the actual map of Zurich.
+We enabled communication between MATLAB and Javascript using the included Java classes for Sockets.
+The Javascript code issues HTTP GET requests telling the MATLAB implementation which methods to perform.
+Afterwards the location of every car in Zurich was passed as an JSON object through the socket.
+
+
+\section{Simulation Results and Discussion}
+
+\section{Summary and Outlook}
+
+% \section{References}
+
+\newpage
+\printbibliography
+
+
+\end{document}
+
+
+
+
